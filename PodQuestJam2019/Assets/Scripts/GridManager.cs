@@ -1,21 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GridManager : MonoBehaviour
 {
     [SerializeField] private GameObject _cellPrefab;
 
     private List<Cell> _grid = new List<Cell>();
-
+    
     // TODO: consider a ScriptableObject to hold GridInformation
     [SerializeField] private Vector2Int size;
-    
+
+    public List<Cell> Grid => _grid;
+
     private void Start()
     {
-        InitGrid();
+        //Init();
+
+//        var initialCell = GetRandomCell();
+//        var neighbors = GetNeighbors(initialCell);
+//        
+//        Debug.Log($"RandomInitialCell: {initialCell}");
+//        Debug.Log($"Up: {neighbors.Up}");
+//        Debug.Log($"Down: {neighbors.Down}");
+//        Debug.Log($"Left: {neighbors.Left}");
+//        Debug.Log($"Right: {neighbors.Right}");
     }
 
-    private void InitGrid()
+    public void Init()
     {
         var offset = new Vector3(-(float)size.x/2, 0, -(float)size.y/2);
         
@@ -25,10 +39,38 @@ public class GridManager : MonoBehaviour
             {
                 var newGameObject = Instantiate(_cellPrefab, new Vector3(x, 0, y) + offset, Quaternion.Euler(0, 0, 0), transform);
                 var newCell = newGameObject.GetComponent<Cell>();
+                newCell.Init(x, y);
                 newGameObject.name = $"Cell{x}x{y}";
                 _grid.Add(newCell);
             }
         }
     }
+
+    public Cell GetRandomCell()
+    {
+        var randomIndex = Random.Range(0, _grid.Count);
+        return _grid[randomIndex];
+    }
+
+    /// <summary>
+    /// Try get all 4 neighbor cells. Can return null elements.
+    /// </summary>
+    public Neighbors GetNeighbors(Cell cell)
+    {
+        var neighbors = new Neighbors();
+        var position = cell.Position;
+
+        neighbors.Up = _grid.Find(x => x.Position == position + Vector2Int.up);
+        neighbors.Down = _grid.Find(x => x.Position == position + Vector2Int.down);
+        neighbors.Left = _grid.Find(x => x.Position == position + Vector2Int.left);
+        neighbors.Right = _grid.Find(x => x.Position == position + Vector2Int.right);
+        
+        return neighbors;
+    }
     
+    public Cell GetUp(Cell cell) => _grid.Find(x => x.Position == cell.Position + Vector2Int.up);
+    public Cell GetDown(Cell cell) => _grid.Find(x => x.Position == cell.Position + Vector2Int.down);
+    public Cell GetLeft(Cell cell) => _grid.Find(x => x.Position == cell.Position + Vector2Int.left);
+    public Cell GetRight(Cell cell) => _grid.Find(x => x.Position == cell.Position + Vector2Int.right);
+
 }
