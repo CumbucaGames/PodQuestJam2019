@@ -6,37 +6,46 @@ public class InputManager : MonoBehaviour
     public delegate void Down();
     public delegate void Left();
     public delegate void Right();
-    
+
     public event Up OnUp;
     public event Down OnDown;
     public event Left OnLeft;
     public event Right OnRight;
-    
+
     private void Update()
     {
-        if (Input.GetKeyDown("up"))
+        if (Input.GetButtonDown("Vertical"))
         {
-            OnUp?.Invoke();
-            return;
+            float axisVertical = Input.GetAxisRaw("Vertical");
+            
+            if (axisVertical == 1)
+            {
+                OnUp?.Invoke();
+                return;
+            }
+
+            if (axisVertical == -1)
+            {
+                OnDown?.Invoke();
+                return;
+            }
         }
 
-        if (Input.GetKeyDown("down"))
+        if (Input.GetButtonDown("Horizontal"))
         {
-            OnDown?.Invoke();
-            return;
-        }
-        
-        if (Input.GetKeyDown("left"))
-        {
-            OnLeft?.Invoke();
-            return;
-        }
+            float axisHorizontal = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKeyDown("right"))
-        {
-            OnRight?.Invoke();
-            return;
-        }
+            if (axisHorizontal == -1)
+            {
+                OnLeft?.Invoke();
+                return;
+            }
 
+            if (axisHorizontal == 1)
+            {
+                OnRight?.Invoke();
+                return;
+            }
+        }
     }
 }
