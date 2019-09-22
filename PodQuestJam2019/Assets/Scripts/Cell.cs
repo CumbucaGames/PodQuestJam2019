@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class Cell : MonoBehaviour
@@ -8,7 +9,11 @@ public class Cell : MonoBehaviour
     // maybe _enableState
     // color array?
 
-    public Vector2Int Position { get; set; }
+    public Vector2Int Position
+    {
+        get => _position;
+        set => _position = value;
+    }
     
     public void Init(int x, int y)
     {

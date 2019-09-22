@@ -9,26 +9,19 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject _cellPrefab;
 
     private List<Cell> _grid = new List<Cell>();
+    private Cell _cubeCell;
     
     // TODO: consider a ScriptableObject to hold GridInformation
     [SerializeField] private Vector2Int size;
 
     public List<Cell> Grid => _grid;
 
-    private void Start()
+    public Cell CubeCell 
     {
-        //Init();
-
-//        var initialCell = GetRandomCell();
-//        var neighbors = GetNeighbors(initialCell);
-//        
-//        Debug.Log($"RandomInitialCell: {initialCell}");
-//        Debug.Log($"Up: {neighbors.Up}");
-//        Debug.Log($"Down: {neighbors.Down}");
-//        Debug.Log($"Left: {neighbors.Left}");
-//        Debug.Log($"Right: {neighbors.Right}");
+        get => _cubeCell;
+        set => _cubeCell = value;
     }
-
+    
     public void Init()
     {
         var offset = new Vector3(-(float)size.x/2, 0, -(float)size.y/2);
@@ -44,6 +37,8 @@ public class GridManager : MonoBehaviour
                 _grid.Add(newCell);
             }
         }
+
+        _cubeCell = GetRandomCell();
     }
 
     public Cell GetRandomCell()

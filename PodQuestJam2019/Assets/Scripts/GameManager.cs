@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     private void Init()
     {
         gridManager.Init();
-        _cubeCell = gridManager.GetRandomCell();
+        _cubeCell = gridManager.CubeCell;
     }
 
     private void InstantiateCube()
