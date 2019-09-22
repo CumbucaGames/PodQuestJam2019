@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
 
 public class GameManager : MonoBehaviour
 {
@@ -39,37 +37,65 @@ public class GameManager : MonoBehaviour
     private void HandleUp()
     {
         var nextCell = gridManager.GetUp(_cubeCell);
-        MoveCube(nextCell);
+        MoveCube(nextCell, Coordinate.Up);
     }
     
     private void HandleDown()
     {
         var nextCell = gridManager.GetDown(_cubeCell);
-        MoveCube(nextCell);
+        MoveCube(nextCell, Coordinate.Down);
     }
     
     private void HandleLeft()
     {
         var nextCell = gridManager.GetLeft(_cubeCell);
-        MoveCube(nextCell);
+        MoveCube(nextCell, Coordinate.Left);
     }
     
     private void HandleRight()
     {
         var nextCell = gridManager.GetRight(_cubeCell);
-        MoveCube(nextCell);
+        MoveCube(nextCell, Coordinate.Right);
     }
 
-    private void MoveCube(Cell nextCell)
+    private void MoveCube(Cell nextCell, Coordinate coordinate)
     {
         if (nextCell == null)
         {
             Debug.Log("Cannot move to a null cell");
             return;
         }
-        
+
+        switch (coordinate)
+        { 
+            case Coordinate.Up:
+                _cube.RotateUp();
+                break;
+            case Coordinate.Down:
+                _cube.RotateDown();
+                break;
+            case Coordinate.Left:
+                _cube.RotateLeft();
+                break;
+            case Coordinate.Right:
+                _cube.RotateRight();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(coordinate), coordinate, null);
+        }
         //TODO: implement rotating movement
         _cube.transform.position = nextCell.transform.position;
         _cubeCell = nextCell;
+        
     }
+
+    private enum Coordinate
+    {
+        Up,
+        Down,
+        Left,
+        Right
+    }
+
 }
+
