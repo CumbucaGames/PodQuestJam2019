@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 [RequireComponent(typeof(Transform))]
 public class Cube : MonoBehaviour
 {
     private Transform _transform;
-    //[SerializeField] private AnimationCurve rotateCurve;
+    [SerializeField] private AnimationCurve rotateCurve;
     
     private void Awake()
     {
@@ -13,38 +14,42 @@ public class Cube : MonoBehaviour
 
     public void RotateUp()
     {
-        transform.RotateAround(transform.position, Vector3.left, -90);
-        //StartCoroutine(Rotate(transform.position, Vector3.left, -90));
+        //transform.RotateAround(transform.position, Vector3.left, -90);
+        StartCoroutine(RotateAround(transform.position, Vector3.left, -90));
     }
     
     public void RotateDown()
     {
-        transform.RotateAround(transform.position, Vector3.left, 90);
-        //StartCoroutine(Rotate(transform.position, Vector3.left, 90));
+        //transform.RotateAround(transform.position, Vector3.left, 90);
+        StartCoroutine(RotateAround(transform.position, Vector3.left, 90));
     }
     
     public void RotateLeft()
     {
-        transform.RotateAround(transform.position, Vector3.forward, 90);
-        //StartCoroutine(Rotate(transform.position, Vector3.forward, 90));
+        //transform.RotateAround(transform.position, Vector3.forward, 90);
+        StartCoroutine(RotateAround(transform.position, Vector3.forward, 90));
     }
     
     public void RotateRight()
     { 
-        transform.RotateAround(transform.position, Vector3.forward, -90);
-        //StartCoroutine(Rotate(transform.position, Vector3.forward, -90));
+        //transform.RotateAround(transform.position, Vector3.forward, -90);
+        StartCoroutine(RotateAround(transform.position, Vector3.forward, -90));
     }
 
-//    private IEnumerator Rotate(Vector3 point, Vector3 axis, float angle)
-//    {
-//        var length = rotateCurve.length;
-//
-//        for (int i = 0; i < length; i++)
-//        {
-//            var angleStep = Mathf.Lerp(0, angle, (float) i / length);
-//            transform.RotateAround(transform.position, Vector3.forward, angleStep);
-//            yield return new WaitForFixedUpdate();
-//        }
-//        yield return null;
-//    }
+    private IEnumerator RotateAround(Vector3 point, Vector3 axis, float angle)
+    {
+        //TODO: improve this function, to account for the pivot when rotating
+        var lastKey = rotateCurve[rotateCurve.length - 1];
+        var finalDuration = lastKey.time;
+
+        var currentTime = 0f;
+
+        while (currentTime < finalDuration)
+        {
+            yield return null;
+            var angleStep = rotateCurve.Evaluate(currentTime) * angle * 2 * Time.deltaTime;
+            transform.RotateAround(transform.position, axis, angleStep);
+            currentTime += Time.deltaTime;
+        }
+    }
 }
